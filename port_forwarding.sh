@@ -86,6 +86,9 @@ signature="$(echo "$payload_and_signature" | jq -r '.signature')"
 payload="$(echo "$payload_and_signature" | jq -r '.payload')"
 port="$(echo "$payload" | base64 -d | jq -r '.port')"
 
+[[ "$port" ]] || { >&2 echo "port not found in payload"; exit 1; }
+./on-pf-up "$port"
+
 # The port normally expires after 2 months. If you consider
 # 2 months is not enough for your setup, please open a ticket.
 expires_at="$(echo "$payload" | base64 -d | jq -r '.expires_at')"
