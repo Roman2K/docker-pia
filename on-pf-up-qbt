@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+pf_port=${1?}
+url=${ON_PF_QBT_URL?}
+
+echo "Setting port-forwarded port: $pf_port"
+
+die() { >&2 echo "error:" "$@"; exit 1; }
+
+cookie=`curl --fail -v -X POST \
+  -F "username=${ON_PF_QBT_LOGIN?}" -F "password=${ON_PF_QBT_PASSWORD?}" \
+  "$url/api/v2/auth/login" 2>&1 >/dev/null \
+  | egrep -o 'SID=[^;]+'` \
+  || die "failed to get auth cookie"
+
+echo "Successfully authenticated to qBT"
+
+get_listen_port() {
+  curl --fail -s -H "Cookie: $cookie" "$url/api/v2/app/preferences" \
+    | jq -r '.listen_port' \
+    || die "failed to get listen port"
+}
+
+current=`get_listen_port`
+echo "Current listen port: $current"
+if [[ "$current" = "$pf_port" ]]; then
+  echo "No update needed"
+  exit 0
+fi
+
+curl --fail -s -X POST -H "Cookie: $cookie" \
+  -F 'json={"random_port": false, "listen_port": '$pf_port'}' \
+  "$url/api/v2/app/setPreferences" \
+  || die "failed to set listen port"
+
+[[ "`get_listen_port`" = "$pf_port" ]] || die "listen port wasn't updated"
+echo "Listen port updated"

@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-echo "default `basename "$0"` (" $@ ")"
+echo "default `basename "$0"` (" "$@" ")"

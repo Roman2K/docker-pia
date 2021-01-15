@@ -87,7 +87,8 @@ payload="$(echo "$payload_and_signature" | jq -r '.payload')"
 port="$(echo "$payload" | base64 -d | jq -r '.port')"
 
 [[ "$port" ]] || { >&2 echo "port not found in payload"; exit 1; }
-./on-pf-up "$port"
+${PIA_ON_PF_EXEC-./on-pf-up} "$port" \
+  || { >&2 echo "port-forwarding callback failed"; exit 1; }
 
 # The port normally expires after 2 months. If you consider
 # 2 months is not enough for your setup, please open a ticket.
