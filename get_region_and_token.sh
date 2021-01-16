@@ -181,7 +181,8 @@ if [[ $PIA_AUTOCONNECT == wireguard ]]; then
   echo PIA_PF=$PIA_PF ./connect_to_wireguard_with_token.sh
   echo
   PIA_PF=$PIA_PF PIA_TOKEN="$token" WG_SERVER_IP=$bestServer_WG_IP \
-    WG_HOSTNAME=$bestServer_WG_hostname ./connect_to_wireguard_with_token.sh
+    WG_HOSTNAME=$bestServer_WG_hostname \
+    exec ./connect_to_wireguard_with_token.sh
   exit 0
 fi
 
@@ -205,7 +206,7 @@ if [[ $PIA_AUTOCONNECT == openvpn* ]]; then
     OVPN_SERVER_IP=$serverIP \
     OVPN_HOSTNAME=$serverHostname \
     CONNECTION_SETTINGS=$PIA_AUTOCONNECT \
-    ./connect_to_openvpn_with_token.sh
+    exec ./connect_to_openvpn_with_token.sh
   exit 0
 fi
 

@@ -141,7 +141,9 @@ fi
 
 # Create the OpenVPN config based on the settings specified
 cat $prefix_filepath > /opt/piavpn-manual/pia.ovpn || exit 1
-echo remote $OVPN_SERVER_IP $port $protocol >> /opt/piavpn-manual/pia.ovpn
+{ echo remote $OVPN_SERVER_IP $port $protocol
+  echo user nobody
+} >> /opt/piavpn-manual/pia.ovpn
 
 # Copy the up/down scripts to /opt/piavpn-manual/
 # based upon use of PIA DNS
@@ -232,7 +234,8 @@ $ PIA_TOKEN=\"$PIA_TOKEN\" \\
   ./port_forwarding.sh
 "
 
-PIA_TOKEN=$PIA_TOKEN \
+exec sudo -u nobody -E \
+  PIA_TOKEN=$PIA_TOKEN \
   PF_GATEWAY="$gateway_ip" \
   PF_HOSTNAME="$OVPN_HOSTNAME" \
   ./port_forwarding.sh
