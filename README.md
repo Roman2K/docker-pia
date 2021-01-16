@@ -10,6 +10,22 @@ cd manual-connections
 
 The scripts were written so that they are easy to read and to modify. The code also has a lot of comments, so that you find all the information you might need. We hope you will enjoy forking the repo and customizing the scripts for your setup!
 
+## @Roman2K Fork
+
+Changes from upstream
+[pia-foss/manual-connections](https://github.com/pia-foss/manual-connections):
+
+- Port-forwarding:
+  - Custom callback (`$PIA_ON_PF_EXEC`)
+  - Callback for setting qBitTorrent listen port
+- Drop root privileges:
+  - Run openvpn as `nobody`
+  - Run port-forwarding refresh loop as `nobody`
+- TODO:
+  - Kill switch
+
+Note: OpenVPN only. Wireguard not tested, left for ease of rebases.
+
 ## Table of Contents
 
 - [Dependencies](#dependencies)
